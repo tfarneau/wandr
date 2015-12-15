@@ -37,7 +37,7 @@ class JWTEvents extends Event
     public function notFound(){
         return response()->json([
             "status" => 403,
-            "status_message" => "jwt_notfound",
+            "status_message" => "JWT_NOTFOUND",
             "data" => null
         ]);
         die();
@@ -46,7 +46,7 @@ class JWTEvents extends Event
     public function invalid(){
         return response()->json([
             "status" => 403,
-            "status_message" => "jwt_invalid",
+            "status_message" => "JWT_INVALID",
             "data" => null
         ]);
         die();
@@ -55,7 +55,7 @@ class JWTEvents extends Event
     public function expired(){
         return response()->json([
             "status" => 403,
-            "status_message" => "jwt_expired",
+            "status_message" => "JWT_EXPIRED",
             "data" => null
         ]);
         die();
@@ -64,7 +64,7 @@ class JWTEvents extends Event
     public function missing(){
         return response()->json([
             "status" => 403,
-            "status_message" => "jwt_missing",
+            "status_message" => "JWT_MISSING",
             "data" => null
         ]);
         die();

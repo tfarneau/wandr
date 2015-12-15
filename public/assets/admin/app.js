@@ -63,6 +63,18 @@ var options = {
 			]
 		},
 		{
+			path : "/calculate",
+			slug : "calculate",
+			method : "GET",
+			fields : [
+				{
+					name : "checkpoints",
+					label : "Checkpoints",
+					default_value : ""
+				}
+			]
+		},
+		{
 			path : "/me",
 			slug : "me",
 			method : "GET",

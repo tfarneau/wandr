@@ -61,9 +61,10 @@ class CheckpointsController extends ApiController
                 $_v = [
                     'fs_id' => $v->id,
                     'name' => $v->name,
-                    'location' => $v->location,
-                    'status' => $v->stats,
-                    'url' => isset($v->url) ? $v->url : null
+                    'lat' => $v->location->lat,
+                    'lng' => $v->location->lng,
+                    // 'stats' => $v->stats,
+                    // 'url' => isset($v->url) ? $v->url : null
                 ];
 
                 $data[] = $_v;

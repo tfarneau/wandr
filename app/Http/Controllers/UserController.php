@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 // use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\Controller;
 
@@ -64,7 +65,13 @@ class UserController extends ApiController
         }
         else
         {
-            $user = new User($v->getData());
+
+            $user = new User([
+                'email' => $v->getData()['email'],
+                'name' => $v->getData()['name'],
+                'password' => Hash::make($v->getData()['password']),
+            ]);
+
             $user->save();
             return $this->respondSuccess('USER_ADDED', $v->getData());
         }
