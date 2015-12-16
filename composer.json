@@ -9,7 +9,8 @@
         "laravel/framework": "5.1.*",
         "tymon/jwt-auth": "0.5.*",
         "flynsarmy/csv-seeder": "1.0.*",
-        "curl/curl": "*"
+        "curl/curl": "*",
+        "toin0u/geotools-laravel": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

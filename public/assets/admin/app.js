@@ -1,5 +1,5 @@
 var options = {
-	url : "http://localhost:8000/api",
+	url : BASE_PATH,
 	routes : [
 		{
 			path : "/login",
@@ -51,9 +51,19 @@ var options = {
 					default_value : "48.8388423,2.4149193"
 				},
 				{
-					name : "radius",
-					label : "Rayon (km) (required)",
-					default_value : "1000"
+					name : "time",
+					label : "temps en minutes",
+					default_value : "20"
+				},
+				{
+					name : "mode",
+					label : "mode de transport : bike | foot",
+					default_value : "bike"
+				},
+				{
+					name : "type",
+					label : "type : classic | sport",
+					default_value : "classic"
 				},
 				{
 					name : "limit",
@@ -109,6 +119,8 @@ var Api = function(options){
 
 		this.logJSON(data,'query');
 
+		$('.js-loading').addClass('visible');
+
 		$.ajax({
 		  type: method,
 		  url: parent.options.url+path,
@@ -150,6 +162,8 @@ var Api = function(options){
 		  		that.logJSON(json,'response');
 		  		$('.js-status').text(data.status);
 		  	}
+
+		  	$('.js-loading').removeClass('visible');
 
 		});;
 

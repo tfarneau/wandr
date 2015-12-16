@@ -18,12 +18,13 @@ Route::get('/', function () {
 Route::group(['prefix' => 'api'], function()
 {
     Route::get('me', 'UserController@index')->middleware(['jwt.auth']);
-    Route::get('checkpoints', 'CheckpointsController@index')->middleware(['jwt.auth']);
+    Route::get('checkpoints', 'CheckpointsController@index');
     Route::get('calculate', 'ItinerariesController@calculate');
     Route::post('register', 'UserController@register');
     Route::post('login', 'UserController@authenticate');
 });
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'debugger'], function () {
     Route::get('/', 'ApiController@dashboard');
+    Route::get('/simulator', 'ApiController@simulator');
 });

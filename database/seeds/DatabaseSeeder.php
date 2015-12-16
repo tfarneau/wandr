@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call('UserTableSeeder');
-        $this->call('CheckpointTableSeeder');
+        $this->call('LanduseTableSeeder');
 
         Model::reguard();
     }
@@ -53,7 +53,7 @@ class UserTableSeeder extends Seeder
     }
 }
 
-class CheckpointTableSeeder extends CsvSeeder
+class LanduseTableSeeder extends CsvSeeder
 {
     public function __construct()
     {

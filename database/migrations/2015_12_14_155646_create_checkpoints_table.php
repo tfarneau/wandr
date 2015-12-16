@@ -13,15 +13,22 @@ class CreateCheckpointsTable extends Migration
     public function up()
     {
         Schema::create('checkpoints', function (Blueprint $table) {
+
             $table->increments('id');
             $table->timestamps();
+
+            $table->string('fs_id')->nullable()->unique();
             $table->string('name')->nullable();
-            $table->string('desc')->nullable();
-            $table->string('image')->nullable();
-            $table->float('lat');
-            $table->float('lng');
-            $table->string('source_type');
-            $table->string('source_url')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
+            $table->integer('checkin_count')->nullable();
+            $table->string('photo_original')->nullable();
+            $table->string('photo_saved')->nullable();
+            $table->string('url')->nullable();
+            $table->float('rating')->nullable();
+            $table->string('address')->nullable();
+            $table->text('tip')->nullable();
+
         });
     }
 
