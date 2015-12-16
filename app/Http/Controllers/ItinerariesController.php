@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Toin0u\Geotools\Facade\Geotools;
 
 use App\Checkpoint;
+use \GoogleMaps;
 
 class ItinerariesController extends ApiController
 {
@@ -24,7 +25,7 @@ class ItinerariesController extends ApiController
     		'fs_ids' => explode(',', Input::get('fs_ids')),
     		'time' => Input::get('time'),
     		'mode' => Input::get('mode'),
-    		'style' => Input::get('type'),
+    		'type' => Input::get('type'),
             'll' => explode(',', Input::get('ll'))
     	];
 
@@ -160,13 +161,77 @@ class ItinerariesController extends ApiController
             $coords_last = $coords_actual;
         }
 
-        return [
-            'checkpoints' => $itinerary,
-            'initial_distance' => $initial_distance,
-            'distance' => $distance,
-            'totaldistance' => $totaldistance,
-            'gmapurl' => $gmapurl
+        $waypoints = [];
+        foreach($itinerary as $k => $v){
+            $waypoints[] = $v['lat'].','.$v['lng'];
+        }
+
+        // return $coords;
+
+        $direction = GoogleMaps::load('directions')
+            ->setParam([
+                'origin' => $waypoints[0], 
+                'destination' =>  $waypoints[0], 
+                'waypoints' => $waypoints,
+                'language' => 'fr',
+                'mode' => $settings['mode'] == 'bike' ? 'bicycling' : 'walking' // bicycling
+            ])
+           ->get();
+
+        $direction = json_decode($direction,true);
+
+        $metas = [
+            'calc_distance' => $distance,
+            'calc_totaldistance' => $totaldistance,
+            'calc_gmapurl' => $gmapurl,
+            'total_distance' => 0,
+            'total_time' => 0,
+            'speed' => 1,
         ];
+
+        $polyline = $direction['routes'][0]['overview_polyline'];
+        
+        // Get route and meta
+
+        $route = [];
+        foreach($direction['routes'][0]['legs'] as $v){
+            $metas['total_distance'] += $v['distance']['value'];
+            $metas['total_time'] += $v['duration']['value'];
+
+            $_route = [
+                'distance' => $v['distance']['value'],
+                'steps' => []
+            ];
+
+            foreach($v['steps'] as $v2){
+                $_route['steps'][] = [
+                    'distance' => $v2['distance']['value'],
+                    'instruction' => strip_tags($v2['html_instructions']),
+                ];
+            }
+
+            $route[] = $_route;
+
+        }
+
+        // Get speed
+
+        $speed = $this->getSpeed($settings['mode'],$settings['type']);
+
+        $metas['speed'] = $speed;
+        $metas['time_h'] = $metas['total_distance']/1000/$speed;
+        $metas['time_minutes'] = $metas['time_h']*60;
+
+        // $route = $direction['routes'][0]['legs'];
+
+        $return = [
+            'metas' => $metas,
+            'direction' => $route,
+            'polyline' => $polyline,
+            'checkpoints' => $itinerary
+        ];
+
+        return $this->respondSuccess("REQUEST_SUCCESS", $return);
 
         // retourner un linestring geojson
         // étapes

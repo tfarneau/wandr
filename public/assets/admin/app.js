@@ -44,7 +44,7 @@ var options = {
 		},
 		{
 			path : "/checkpoints",
-			slug : "checkpoint",
+			slug : "checkpoints",
 			secured : true,
 			method : "GET",
 			fields : [
@@ -56,17 +56,17 @@ var options = {
 				{
 					name : "time",
 					label : "temps en minutes",
-					default_value : "20"
+					default_value : "40"
 				},
 				{
 					name : "mode",
 					label : "mode de transport : bike | foot",
-					default_value : "bike"
+					default_value : "foot"
 				},
 				{
 					name : "type",
 					label : "type : classic | sport",
-					default_value : "classic"
+					default_value : "sport"
 				},
 				{
 					name : "limit",
@@ -82,9 +82,34 @@ var options = {
 			method : "GET",
 			fields : [
 				{
-					name : "checkpoints",
-					label : "Checkpoints",
-					default_value : ""
+					name : "ll",
+					label : "Latitude & longitude (required)",
+					default_value : "48.8388423,2.4149193"
+				},
+				{
+					name : "time",
+					label : "temps en minutes",
+					default_value : "40"
+				},
+				{
+					name : "mode",
+					label : "mode de transport : bike | foot",
+					default_value : "foot"
+				},
+				{
+					name : "type",
+					label : "type : classic | sport",
+					default_value : "sport"
+				},
+				{
+					name : "limit",
+					label : "Limite (facultatif)",
+					default_value : 10
+				},
+				{
+					name : "fs_ids",
+					label : "Ids foursquare",
+					default_value : "4d8db929d265236a4eadf816,4adcda09f964a520103421e3,4adcda0af964a5202a3421e3,4adcda0af964a520313421e3,4c40ed7bd691c9b6a9ff8b0a"
 				}
 			]
 		},
@@ -109,7 +134,8 @@ var Api = function(options){
 	var parent = this;
 
 	this.logJSON = function(json,type){
-		$(".json-"+type+" .json-data").JSONView(json);
+		var collapsed = type == "response" ? true : false;
+		$(".json-"+type+" .json-data").JSONView(json,{ collapsed : collapsed});
 	}
 
 	this.callApi = function(method,path,params){

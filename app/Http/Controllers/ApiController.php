@@ -48,12 +48,20 @@ class ApiController extends Controller
     	return $this->respond(200, $status_message, $data);
     }
 
-    public function getRadius($time,$mode,$type){
+    public function getSpeed($mode,$type){
 
+        $speed = 1;
         if($mode == "bike" && $type == "classic"){ $speed = 13; }
         if($mode == "bike" && $type == "sport"){  $speed = 18; }
         if($mode == "foot" && $type == "classic"){ $speed = 5; }
         if($mode == "foot" && $type == "sport"){ $speed = 10; }
+        return $speed;
+
+    }
+
+    public function getRadius($time,$mode,$type){
+
+        $speed = $this->getSpeed($mode,$type);
 
         $time_h = $time/60; // Convert time to hours
         $radius = round($speed*$time_h); // Km * Km/h = h

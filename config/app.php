@@ -136,7 +136,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        'Barryvdh\Cors\ServiceProvider',
 
         /*
          * Application Service Providers...
@@ -146,7 +145,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-        Toin0u\Geotools\GeotoolsServiceProvider::class
+        Toin0u\Geotools\GeotoolsServiceProvider::class,
+        'Barryvdh\Cors\ServiceProvider',
+        'GoogleMaps\ServiceProvider\GoogleMapsServiceProvider',
 
     ],
 
@@ -199,6 +200,7 @@ return [
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Geotools' => Toin0u\Geotools\Facade\Geotools::class,
+        'GoogleMaps' => 'GoogleMaps\Facade\GoogleMapsFacade'
 
     ],
 
