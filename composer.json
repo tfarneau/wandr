@@ -10,7 +10,8 @@
         "tymon/jwt-auth": "0.5.*",
         "flynsarmy/csv-seeder": "1.0.*",
         "curl/curl": "*",
-        "toin0u/geotools-laravel": "~1.0"
+        "toin0u/geotools-laravel": "~1.0",
+        "barryvdh/laravel-cors": "0.7.x"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
