@@ -18,8 +18,8 @@ Route::get('/', function () {
 Route::group(['prefix' => 'api'], function()
 {
     Route::get('me', 'UserController@index')->middleware(['jwt.auth']);
-    Route::get('checkpoints', 'CheckpointsController@index');
-    Route::get('calculate', 'ItinerariesController@calculate');
+    Route::get('checkpoints', 'CheckpointsController@index')->middleware(['jwt.auth']);
+    Route::get('calculate', 'ItinerariesController@calculate')->middleware(['jwt.auth']);
     Route::post('register', 'UserController@register');
     Route::post('login', 'UserController@authenticate');
 });
