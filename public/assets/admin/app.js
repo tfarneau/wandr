@@ -5,6 +5,7 @@ var options = {
 			path : "/login",
 			slug : "login",
 			method : "POST",
+			secured : false,
 			fields : [
 				{
 					name : "email",
@@ -22,6 +23,7 @@ var options = {
 			path : "/register",
 			slug : "register",
 			method : "POST",
+			secured : false,
 			fields : [
 				{
 					name : "email",
@@ -43,6 +45,7 @@ var options = {
 		{
 			path : "/checkpoints",
 			slug : "checkpoint",
+			secured : true,
 			method : "GET",
 			fields : [
 				{
@@ -75,6 +78,7 @@ var options = {
 		{
 			path : "/calculate",
 			slug : "calculate",
+			secured : true,
 			method : "GET",
 			fields : [
 				{
@@ -87,6 +91,7 @@ var options = {
 		{
 			path : "/me",
 			slug : "me",
+			secured : true,
 			method : "GET",
 			fields : [
 				
@@ -116,6 +121,7 @@ var Api = function(options){
 			data[params[i].name] = params[i].value;
 			path = path.replace('{'+params[i].name+'}',params[i].value);
 		}
+		data['token'] = (parent.token);
 
 		this.logJSON(data,'query');
 
@@ -147,13 +153,15 @@ var Api = function(options){
 		  		if(data.responseJSON !== undefined){ json = data.responseJSON; }
 		  		that.logJSON(json,'response');
 
-		  		$.ajaxPrefilter(function( options ) {
+		  		parent.token = data.token;
+
+		  		/*$.ajaxPrefilter(function( options ) {
 				    if ( !options.beforeSend) {
 				        options.beforeSend = function (xhr) { 
 				            xhr.setRequestHeader('Authorization', 'Bearer '+parent.token);
 				        }
 				    }
-				});
+				});*/
 
 		  	}else{
 		  		var json = data;
@@ -199,7 +207,11 @@ var Api = function(options){
 			// Add route div
 			var html = '<div class="tab-pane fade '+tabClass +'" id="'+route.slug+'">';
 				
-				html += '<p style="margin-top: 20px;">'+route.method+' on '+route.path+'</p>';
+				var badge = "";
+				if(route.secured){
+					badge = '<span class="label label-warning">Token required</span>';
+				}
+				html += '<p style="margin-top: 20px;">'+route.method+' on '+route.path+' '+badge+'</p>';
 				html += '<form style="margin-top: 20px;" class="js-apiform" data-path="'+route.path+'" data-method="'+route.method+'">';
 
 				for(var j in route.fields){
