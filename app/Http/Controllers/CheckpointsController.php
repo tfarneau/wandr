@@ -107,12 +107,17 @@ class CheckpointsController extends ApiController
             // --------------
 
             $count = Input::has('limit') ? Input::get('limit') : 10;
-            $_data = [];
+            if($count > count($data)){
+                $_data = $data;
+            }else{
+                $_data = [];
 
-            $rand_keys = array_rand($data, $count);
-            foreach($rand_keys as $k){
-                $_data[] = $data[$k];
+                $rand_keys = array_rand($data, $count);
+                foreach($rand_keys as $k){
+                    $_data[] = $data[$k];
+                }
             }
+
 
             // Save the data un DB
             // -------------------
