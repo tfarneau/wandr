@@ -24,7 +24,8 @@ class ApiController extends Controller
     	return [
     		"status" => $status,
     		"status_message" => $status_message,
-    		"data" => $data
+    		"data" => $data,
+            "count" => count($data)
     	];
     }
 

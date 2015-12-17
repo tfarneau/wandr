@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateItinerariesTable extends Migration
+class CreateCheckpointsrequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,14 @@ class CreateItinerariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('itineraries', function (Blueprint $table) {
+        Schema::create('checkpoints_requests', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
+            $table->double('lat');
+            $table->double('lng');
+            $table->integer('time');
+            $table->string('mode');
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -25,6 +31,6 @@ class CreateItinerariesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('itineraries');
+        Schema::drop('checkpoints_requests');
     }
 }

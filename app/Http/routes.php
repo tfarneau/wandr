@@ -18,6 +18,14 @@ Route::get('/', function () {
 Route::group(['prefix' => 'api'], function()
 {
     Route::get('me', 'UserController@index')->middleware(['jwt.auth']);
+    Route::get('me/requests', 'UserController@requests')->middleware(['jwt.auth']);
+
+    Route::get('me/itineraries', 'ItinerariesController@index')->middleware(['jwt.auth']);
+    Route::get('me/itineraries/favorites', 'ItinerariesController@favorites')->middleware(['jwt.auth']);
+    Route::post('me/itineraries/{id}/favorite', 'ItinerariesController@favorite')->middleware(['jwt.auth']);
+    Route::post('me/itineraries/{id}/unfavorite', 'ItinerariesController@unfavorite')->middleware(['jwt.auth']);
+    Route::get('me/itineraries/{id}', 'ItinerariesController@index')->middleware(['jwt.auth']);
+   
     Route::get('checkpoints', 'CheckpointsController@index')->middleware(['jwt.auth']);
     Route::get('calculate', 'ItinerariesController@calculate')->middleware(['jwt.auth']);
     Route::post('register', 'UserController@register');

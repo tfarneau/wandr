@@ -121,6 +121,72 @@ var options = {
 			fields : [
 				
 			]
+		},
+		{
+			path : "/me/requests",
+			slug : "me_requests",
+			secured : true,
+			method : "GET",
+			fields : [
+				
+			]
+		},
+		{
+			path : "/me/itineraries",
+			slug : "me_itineraries",
+			secured : true,
+			method : "GET",
+			fields : [
+				
+			]
+		},
+		{
+			path : "/me/itineraries/favorites",
+			slug : "me_itineraries_favorites",
+			secured : true,
+			method : "GET",
+			fields : [
+				
+			]
+		},
+		{
+			path : "/me/itineraries/{id}",
+			slug : "me_itinerary",
+			secured : true,
+			method : "GET",
+			fields : [
+				{
+					name : "id",
+					label : "id à rechercher",
+					default_value : 1
+				}
+			]
+		},
+		{
+			path : "/me/itineraries/{id}/favorite",
+			slug : "me_itinerary_favorite",
+			secured : true,
+			method : "POST",
+			fields : [
+				{
+					name : "id",
+					label : "id de l'itinerary à favorite",
+					default_value : 1
+				}
+			]
+		},
+		{
+			path : "/me/itineraries/{id}/unfavorite",
+			slug : "me_itinerary_unfavorite",
+			secured : true,
+			method : "POST",
+			fields : [
+				{
+					name : "id",
+					label : "id de l'itinerary à favorite",
+					default_value : 1
+				}
+			]
 		}
 	]
 };
@@ -152,6 +218,10 @@ var Api = function(options){
 		this.logJSON(data,'query');
 
 		$('.js-loading').addClass('visible');
+
+		if(method == "POST"){
+			path += '?token='+parent.token;
+		}
 
 		$.ajax({
 		  type: method,

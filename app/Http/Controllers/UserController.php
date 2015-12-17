@@ -13,6 +13,8 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 use App\User;
+use App\Itinerary;
+use App\CheckpointRequest;
 
 class UserController extends ApiController
 {
@@ -22,8 +24,14 @@ class UserController extends ApiController
 
     public function index()
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        return $user;
+        $user =  User::transform([JWTAuth::parseToken()->authenticate()]);
+        return $this->respondSuccess('SUCCESS', $user);
+    }
+
+    public function requests()
+    {
+        $checkpoint_request = CheckpointRequest::transformMany(JWTAuth::parseToken()->authenticate()->checkpoint_request);
+        return $this->respondSuccess('SUCCESS', $checkpoint_request);
     }
 
     public function authenticate(Request $request)
@@ -73,7 +81,7 @@ class UserController extends ApiController
             ]);
 
             $user->save();
-            return $this->respondSuccess('USER_ADDED', $v->getData());
+            return $this->respondSuccess('USER_ADDED', User::transform($user));
         }
 
     }

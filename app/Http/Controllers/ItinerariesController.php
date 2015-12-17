@@ -11,10 +11,66 @@ use App\Http\Controllers\Controller;
 use Toin0u\Geotools\Facade\Geotools;
 
 use App\Checkpoint;
+use App\Itinerary;
+
 use \GoogleMaps;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ItinerariesController extends ApiController
 {
+
+    public function index($id = null)
+    {
+
+        if($id == null){
+            $itineraries = JWTAuth::parseToken()->authenticate()->itineraries;
+        }else{
+            $user = JWTAuth::parseToken()->authenticate();
+            $itinerary = Itinerary::where('id', (int) $id)->where('user_id', $user['id'])->first();
+            if($itinerary == null){
+                return $this->respondError('NOT_FOUND',null);
+            }else{
+                $itineraries = [$itinerary];
+            }
+        }
+
+        return $this->respondSuccess('SUCCESS', Itinerary::transformMany($itineraries));
+    }
+
+    public function favorites()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $itineraries = Itinerary::where('favorite', 1)->where('user_id', $user['id'])->get();
+        
+        if($itineraries == null){ $itineraries = []; }
+
+        return $this->respondSuccess('SUCCESS', Itinerary::transformMany($itineraries));
+    }
+
+    public function favorite($id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $update = Itinerary::where('id', $id)->where('user_id', $user['id'])->update(['favorite' => 1]);
+
+        if($update == true){
+            return $this->respondSuccess('SUCCESS', Itinerary::where('id', $id)->first()); 
+        }else{
+            return $this->respondError('ERROR_UPDATING', $id); 
+        }
+    }
+
+    public function unfavorite($id)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $update = Itinerary::where('id', $id)->where('user_id', $user['id'])->update(['favorite' => 0]);
+
+        if($update == true){
+            return $this->respondSuccess('SUCCESS', Itinerary::where('id', $id)->first()); 
+        }else{
+            return $this->respondError('ERROR_UPDATING', $id); 
+        }
+    }
 
     public function calculate(Request $request){
 
@@ -214,6 +270,9 @@ class ItinerariesController extends ApiController
 
         }
 
+        unset($route[0]); // Remove first
+        unset($route[count($route)]); // Remove last
+
         // Get speed
 
         $speed = $this->getSpeed($settings['mode'],$settings['type']);
@@ -231,7 +290,21 @@ class ItinerariesController extends ApiController
             'checkpoints' => $itinerary
         ];
 
-        return $this->respondSuccess("REQUEST_SUCCESS", $return);
+        // Save data
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $save_itinerary = $return;
+        $save_itinerary['user_id'] = $user['id'];
+        $save_itinerary['metas'] = json_encode($save_itinerary['metas']);
+        $save_itinerary['direction'] = json_encode($save_itinerary['direction']);
+        $save_itinerary['polyline'] = json_encode($save_itinerary['polyline']);
+        $save_itinerary['checkpoints'] = json_encode($save_itinerary['checkpoints']);
+        
+        $itinerary = new Itinerary($save_itinerary);
+        $itinerary->save();
+
+        return $this->respondSuccess("SUCCESS", Itinerary::transform($itinerary));
 
         // retourner un linestring geojson
         // étapes

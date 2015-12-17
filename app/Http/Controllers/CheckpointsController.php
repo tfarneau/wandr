@@ -10,6 +10,10 @@ use App\Http\Controllers\Controller;
 use Validator;
 
 use App\Checkpoint;
+use App\CheckpointRequest;
+
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class CheckpointsController extends ApiController
 {
@@ -127,7 +131,7 @@ class CheckpointsController extends ApiController
                         $checkpoint['photo_saved'] = md5($checkpoint['fs_id']).'.jpg';
                     }*/
 
-                     $checkpoint['photo_saved'] = "not_saved";
+                    $checkpoint['photo_saved'] = "not_saved";
 
                     $checkpoint->save();
 
@@ -135,7 +139,28 @@ class CheckpointsController extends ApiController
 
             }
 
-            return $this->respondSuccess("REQUEST_SUCCESS", $_data);
+            // Save the request
+            // ----------------
+
+            $user = JWTAuth::parseToken()->authenticate();
+
+            $ll = explode(',',Input::get('ll'));
+            // return $ll;
+
+            $checkpoint_request = new CheckpointRequest([
+                'user_id' => $user['id'],
+                'lat' => (double) $ll[0],
+                'lng' => (double) $ll[1],
+                'time' => Input::get('time'),
+                'mode' => Input::get('mode'),
+                'type' => Input::get('type')
+            ]);
+
+            $checkpoint_request->save();
+
+            $_data = Checkpoint::transformMany($_data);
+
+            return $this->respondSuccess("SUCCESS", $_data);
         }
 
     }
