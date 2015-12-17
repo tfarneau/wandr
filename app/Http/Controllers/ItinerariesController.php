@@ -281,6 +281,29 @@ class ItinerariesController extends ApiController
         $metas['time_h'] = $metas['total_distance']/1000/$speed;
         $metas['time_minutes'] = $metas['time_h']*60;
 
+        // Time string
+
+        $seconds = $metas['time_minutes']*60;
+        $hours = floor($seconds / (60 * 60));
+        $divisor_for_minutes = $seconds % (60 * 60);
+        $minutes = floor($divisor_for_minutes / 60);
+        $divisor_for_seconds = $divisor_for_minutes % 60;
+        $seconds = ceil($divisor_for_seconds);
+
+        $time_obj = array(
+            "h" => (int) $hours,
+            "m" => (int) $minutes,
+            "s" => (int) $seconds,
+        );
+
+
+        if($time_obj['h'] > 0){
+            $metas['time_string'] = $time_obj['h'].'h'.$time_obj['m'];
+        }else{
+            $metas['time_string'] = $time_obj['m'].'min';
+        }
+
+        $metas['total_distance_string'] = round($metas['total_distance']/1000,1).'km';
         // $route = $direction['routes'][0]['legs'];
 
         $return = [
