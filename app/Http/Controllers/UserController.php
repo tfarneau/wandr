@@ -24,7 +24,7 @@ class UserController extends ApiController
 
     public function index()
     {
-        $user =  User::transform([JWTAuth::parseToken()->authenticate()]);
+        $user =  User::transform(JWTAuth::parseToken()->authenticate());
         return $this->respondSuccess('SUCCESS', $user);
     }
 
