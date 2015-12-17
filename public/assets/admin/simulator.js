@@ -1,4 +1,5 @@
 var root_url = BASE_PATH;
+var TOKEN;
 
 
 function goStep(index){
@@ -39,6 +40,8 @@ $('.js-step1').submit(function(e){
 		if(data.data.token !== undefined){
 
 	  		$('.js-step1-status').text('Login success !');
+
+	  		TOKEN = data.data.token;
 
 	  		$.ajaxPrefilter(function( options ) {
 			    if ( !options.beforeSend) {
@@ -111,6 +114,11 @@ $('.js-step2').submit(function(e){
 	});
 
 	step2_data = data;
+
+	data.push({
+		name: "token",
+		value: TOKEN
+	});
 
 	$.ajax({
 	  type: "GET",
@@ -185,6 +193,11 @@ $('.js-step3').on('click',function(e){
 		value: fs_ids
 	});
 
+	data.push({
+		name: "token",
+		value: TOKEN
+	});
+	
 	$.ajax({
 	  type: "GET",
 	  url: root_url+"/calculate",
