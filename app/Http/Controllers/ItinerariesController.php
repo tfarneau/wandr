@@ -303,7 +303,7 @@ class ItinerariesController extends ApiController
             $metas['time_string'] = $time_obj['m'].'min';
         }
 
-        $metas['total_distance_string'] = round($metas['total_distance']/1000,1).'km';
+        $metas['total_distance_string'] = round($metas['total_distance']/1000,1);
         // $route = $direction['routes'][0]['legs'];
 
         $return = [
