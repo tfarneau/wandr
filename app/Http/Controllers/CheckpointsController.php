@@ -92,10 +92,21 @@ class CheckpointsController extends ApiController
 
             }
 
+            // Delete data without image or rating
+            // -----------------------------------
+
+            $_data = [];
+            foreach($data as $k => $v){
+                if($v['photo_original'] != null AND $v['rating'] != null){
+                    array_push($_data,$v);
+                }
+            }
+            $data = $_data;
+
             // Get only limit
             // --------------
 
-            $count = Input::has('limit') ? Input::get('limit') : 9;
+            $count = Input::has('limit') ? Input::get('limit') : 10;
             $_data = [];
 
             $rand_keys = array_rand($data, $count);

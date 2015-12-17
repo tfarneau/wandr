@@ -55,7 +55,7 @@ class ApiController extends Controller
         if($mode == "bike" && $type == "classic"){ $speed = 13; }
         if($mode == "bike" && $type == "sport"){  $speed = 18; }
         if($mode == "foot" && $type == "classic"){ $speed = 5; }
-        if($mode == "foot" && $type == "sport"){ $speed = 10; }
+        if($mode == "foot" && $type == "sport"){ $speed = 8; }
         return $speed;
 
     }
