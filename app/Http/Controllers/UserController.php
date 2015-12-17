@@ -46,7 +46,7 @@ class UserController extends ApiController
             return $this->respondInternalError('JWT_EXCEPTION', 'could_not_create_token');
         }
 
-        return response()->json(compact('token'));
+        return $this->respondSuccess('USER_LOGGED', compact('token'));
     }
 
     public function register(Request $request)
@@ -80,8 +80,21 @@ class UserController extends ApiController
                 'password' => Hash::make($v->getData()['password']),
             ]);
 
+
+            $credentials = [
+                'email' => $v->getData()['email'],
+                'password' => $v->getData()['password']
+            ];
+
+
+            // return response()->json(compact('token'));
+
             $user->save();
-            return $this->respondSuccess('USER_ADDED', User::transform($user));
+
+            $token = JWTAuth::attempt($credentials);
+
+            return $this->respondSuccess('USER_ADDED', compact('token'));
+
         }
 
     }

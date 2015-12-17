@@ -238,9 +238,9 @@ var Api = function(options){
 			$('.js-lastmethod').text(this.type);
 
 
-			if(data.token !== undefined){
+			if(data.data.token !== undefined){
 
-		  		parent.token = data.token;
+		  		parent.token = data.data.token;
 		  		$('.js-token').text('yep !');
 		  		$('.js-status').text(200);
 
@@ -248,8 +248,6 @@ var Api = function(options){
 		  		if(data.responseText !== undefined){ json =  { error : "crash" }; }
 		  		if(data.responseJSON !== undefined){ json = data.responseJSON; }
 		  		that.logJSON(json,'response');
-
-		  		parent.token = data.token;
 
 		  		/*$.ajaxPrefilter(function( options ) {
 				    if ( !options.beforeSend) {
