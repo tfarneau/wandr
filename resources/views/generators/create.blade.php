@@ -170,7 +170,7 @@
 						<div class="col-md-4">
 					    	<div class="form-group">
 					    	<label class="control-label">Test slack connection ?</label><br>
-					        	<a href="#" class="btn btn-primary js-testslack is-active btn-form">Send a test message</a>
+					        	<a href="#" class="btn btn-default js-testslack is-active btn-form">Send a test message</a>
 					        	<p class="help-block">Send a test message to the slack channel(s)</p>
 					    	</div>
 						</div>
@@ -268,7 +268,7 @@
 								@endforeach
 							</div>
 
-							<a href="#" class="btn btn-primary btn-full js-addassitantfields pull-right">Add to my report</a>
+							<a href="#" class="btn btn-default btn-full js-addassitantfields pull-right">Add to my report</a>
 
 						</div>
 
