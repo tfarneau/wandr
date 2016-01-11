@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Validator;
-// use Illuminate\Support\Facades\Input;
+use Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\Controller;
 
-use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
-
 use App\User;
-use App\Itinerary;
-use App\CheckpointRequest;
+use App\Activity;
+use App\Service;
+use App\Generator;
 
 class UserController extends ApiController
 {
@@ -22,35 +20,52 @@ class UserController extends ApiController
         // $this->middleware('jwt.auth', ['except' => ['authenticate']]);
     }
 
-    public function index()
-    {
-        $user =  User::transform(JWTAuth::parseToken()->authenticate());
-        return $this->respondSuccess('SUCCESS', $user);
+    public function edit(){
+        $user = User::find(Auth::user()->id)->first();
+        return view('users.edit')->with(compact('user'));
     }
 
-    public function requests()
-    {
-        $checkpoint_request = CheckpointRequest::transformMany(JWTAuth::parseToken()->authenticate()->checkpoint_request);
-        return $this->respondSuccess('SUCCESS', $checkpoint_request);
+    public function save(Request $request){
+        $inputs = $request->all();
+
+        $user = User::find(Auth::user()->id);
+        $user->fill($inputs);
+        $user->save();
+
+        return redirect()->back()->with('message', 'Account saved !');
     }
 
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+    public function dashboard(){
 
-        try {
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return $this->respondForbidden('INVALID_CREDENTIALS', 'invalid_credentials');
+        // Get services
+
+        $services = Service::transformMany(Auth::user()->services->toArray());
+
+        $ga_services = [];
+        $slack_services = [];
+
+        foreach($services as $v){
+            if($v['slug'] == "ga"){
+                array_push($ga_services,$v);
+            }else if($v['slug'] == "slack"){
+                array_push($slack_services,$v);
             }
-        } catch (JWTException $e) {
-            return $this->respondInternalError('JWT_EXCEPTION', 'could_not_create_token');
         }
 
-        return $this->respondSuccess('USER_LOGGED', compact('token'));
+        // Get generators
+
+        $generators = Generator::where('user_id', Auth::user()->id)->get();
+
+        return view('pages.dashboard')->with([
+            'ga_services' => $ga_services,
+            'slack_services' => $slack_services,
+            'generators' => $generators
+        ]);
     }
 
-    public function register(Request $request)
+    /*public function register(Request $request)
     {
+
         $v = Validator::make(
             $request->all(), 
             [
@@ -86,17 +101,35 @@ class UserController extends ApiController
                 'password' => $v->getData()['password']
             ];
 
-
-            // return response()->json(compact('token'));
-
             $user->save();
 
+            // Test if user is invited by someone
+
+            if($request->get('invited')){
+
+                $invitant_user = User::where('email', $request->get('invited'))->first();
+
+                if($invitant_user != null){
+                    $update = User::where('id', $invitant_user['id'])->increment('max_generators');
+
+                    $activity = new Activity([
+                        'user_id' => $invitant_user['id'],
+                        'type' => 'invited_user',
+                        'var1' => $invitant_user['max_generators']+1,
+                        'var2' => $user['email'],
+                        'var3' => $user['name']
+                    ]);
+                    $activity->save();
+                }
+
+            }
+            
             $token = JWTAuth::attempt($credentials);
 
             return $this->respondSuccess('USER_ADDED', compact('token'));
 
         }
 
-    }
+    }*/
 
 }

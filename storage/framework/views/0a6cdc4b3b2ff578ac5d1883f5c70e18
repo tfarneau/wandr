@@ -1,0 +1,162 @@
+ 
+<?php $__env->startSection('content_header'); ?>
+
+	<div class="row">
+		<div class="col-md-12">
+			<h4>Welcome <?php echo e(Auth::user()->first_name); ?> !</h4>
+			<p><?php if(count($slack_services) == 0 OR count($ga_services) == 0): ?> Firstly, import a Slack team and a Google Analytics account ! <?php endif; ?></p>
+		</div>
+	</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+
+	<div class="row">
+		<?php if(count($slack_services) == 0 OR count($ga_services) == 0): ?>
+			<div class="col-md-12">
+
+				<div class="well">
+					<p><strong>Welcome there !</strong> You haven't added any Slack team or Google Analytic account.</p>
+					<p>First, you have to <a href="/me/service/create/slack">import a Slack team</a>, and <a href="/me/service/create/ga">import a Google Analytics account</a>. Then, you will be able to <a href="/me/generator/create">create a generator</a>, which will help you to create automatic reports. Be sure that your reports and your data will not be stored !</p>
+				</div>
+
+			</div>
+		<?php endif; ?>
+
+		<div class="col-md-6">
+		 	<div class="panel panel-default">
+		        <div class="panel-heading">My Slack teams</div>
+	            <div class="panel-body">
+	            	<div class="col-md-12">
+						<ul class="list-group">
+
+							<?php if(count($slack_services) == 0): ?>
+								<li class="list-group-item">No account added ! Start by importing a Slack team.</li>
+							<?php endif; ?>
+
+							<?php if(count($slack_services) > 0): ?>
+								<?php foreach($slack_services as $slack_service): ?>
+									<li class="list-group-item">
+										<?php echo e($slack_service['var1']); ?>
+
+										<div class="btn-group pull-right">
+											<a href="/me/service/<?php echo e($slack_service['id']); ?>/delete" class="btn btn-default">Delete</a>
+										</div>
+					                </li>
+								<?php endforeach; ?>
+							<?php endif; ?>
+
+							<li class="list-group-item">
+								<a href="/me/service/create/slack" class="btn btn-primary">Import a Slack team</a>
+			                </li>
+
+			            </ul>
+					</div>
+	           	</div>
+		    </div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="panel panel-default">
+		        <div class="panel-heading">My Google Analytics accounts</div>
+	            <div class="panel-body">
+	            	<div class="col-md-12">
+	            		<ul class="list-group">
+
+							<?php if(count($ga_services) == 0): ?>
+								<li class="list-group-item">No account added ! Start by importing a Google Analytics account.</li>
+							<?php endif; ?>
+
+							<?php if(count($ga_services) > 0): ?>
+								<?php foreach($ga_services as $ga_service): ?>
+									<li class="list-group-item">
+										<?php echo e($ga_service['var1']); ?>
+
+										<div class="btn-group pull-right">
+											<a href="/me/service/<?php echo e($ga_service['id']); ?>/delete" class="btn btn-default">Delete</a>
+										</div>
+					                </li>
+								<?php endforeach; ?>
+							<?php endif; ?>
+
+							<li class="list-group-item">
+								<a href="/me/service/create/ga" class="btn btn-primary">Import a Google Analytics account</a>
+			                </li>
+
+			             </ul>
+	            	</div>
+	            </div>
+	        </div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+		        <div class="panel-heading">My generators</div>
+	            <div class="panel-body">
+	            	<div class="col-md-12">
+	            		<ul class="list-group">
+			                <?php if(count($generators) == 0): ?>
+								<li class="list-group-item">No generator added !</li>
+							<?php endif; ?>
+
+							<?php if(count($generators) > 0): ?>
+								<?php foreach($generators as $generator): ?>
+									<li class="list-group-item">
+										<?php echo e($generator['name']); ?>
+
+										
+										<?php if($generator['is_active'] == 1): ?>
+											<span class="label label-info active-status">Active</span>
+										<?php else: ?>
+											<span class="label label-danger active-status">Unactive</span>
+										<?php endif; ?>
+
+										<?php $hours = explode(',',$generator['activation_hours']); ?>
+										<?php foreach($hours as $h): ?>
+											<span class="label label-success"><?php echo e($h); ?>h</span>
+										<?php endforeach; ?>
+
+										<?php $days = explode(',',$generator['activation_days']); ?>
+										<?php
+											$days_array = array(
+											    'Monday',
+											    'Tuesday',
+											    'Wednesday',
+											    'Thursday',
+											    'Friday',
+											    'Saturday',
+											    'Sunday'
+											);
+										?>
+
+										<?php foreach($days as $d): ?>
+											<span class="label label-success"><?php echo e($days_array[$d-1]); ?></span>
+										<?php endforeach; ?>
+
+										<div class="btn-group pull-right">
+											<?php if($generator['is_active'] == 1): ?>
+												<a href="/me/generator/<?php echo e($generator['id']); ?>/unactivate" class="btn btn-default">Unactivate</a>
+											<?php else: ?>
+												<a href="/me/generator/<?php echo e($generator['id']); ?>/activate" class="btn btn-default">Activate</a>
+											<?php endif; ?>
+											<a href="/me/generator/<?php echo e($generator['id']); ?>/edit" class="btn btn-default">Edit</a>
+											<a href="/me/generator/<?php echo e($generator['id']); ?>/test" class="btn btn-default">Test now</a>
+										</div>
+					                </li>
+								<?php endforeach; ?>
+							<?php endif; ?>
+
+							<li class="list-group-item">
+								<a href="/me/generator/create" class="btn btn-primary">Create a generator</a>
+			                </li>
+			             </ul>
+	            	</div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

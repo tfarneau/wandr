@@ -15,11 +15,6 @@ class ApiController extends Controller
         return view('debugger.dashboard');
     }
 
-    public function simulator()
-    {
-        return view('debugger.simulator');
-    }
-
     public function respond($status, $status_message, $data){
     	return [
     		"status" => $status,
@@ -47,31 +42,6 @@ class ApiController extends Controller
 
     public function respondSuccess($status_message, $data){
     	return $this->respond(200, $status_message, $data);
-    }
-
-    public function getSpeed($mode,$type){
-
-        $speed = 1;
-        if($mode == "bike" && $type == "classic"){ $speed = 13; }
-        if($mode == "bike" && $type == "sport"){  $speed = 18; }
-        if($mode == "foot" && $type == "classic"){ $speed = 5; }
-        if($mode == "foot" && $type == "sport"){ $speed = 8; }
-        return $speed;
-
-    }
-
-    public function getRadius($time,$mode,$type){
-
-        $speed = $this->getSpeed($mode,$type);
-
-        $time_h = $time/60; // Convert time to hours
-        $radius = round($speed*$time_h); // Km * Km/h = h
-
-        $radius > 50 ? $radius = 50000 : $radius = $radius*1000; // Km to m
-        $radius = round($radius - $radius/100*25); // - 25% radius
-
-        return $radius;
-
     }
     
 }

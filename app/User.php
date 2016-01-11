@@ -1,33 +1,35 @@
-<?php
-
-namespace App;
-
+<?php namespace App;
+ 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
-class User extends Model implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
-{
-    use Authenticatable, Authorizable, CanResetPassword;
-
+ 
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
+ 
+    use Authenticatable, CanResetPassword;
+ 
     protected $table = 'users';
-
-    protected $fillable = ['name', 'email', 'password'];
-
+ 
+    protected $fillable = ['first_name', 'last_name', 'email', 'password'];
+ 
     protected $hidden = ['password', 'remember_token'];
 
-    public function checkpoint_request(){
-    	return $this->hasMany('App\CheckpointRequest', 'user_id', 'id');
+    public function generators(){
+        return $this->hasMany('App\Generator', 'user_id', 'id');
     }
 
-    public function itineraries(){
-    	return $this->hasMany('App\Itinerary', 'user_id', 'id');
+    public function reports(){
+        return $this->hasMany('App\Report', 'user_id', 'id');
+    }
+
+    public function services(){
+        return $this->hasMany('App\Service', 'user_id', 'id');
+    }
+
+    public function activities(){
+        return $this->hasMany('App\Activity', 'user_id', 'id');
     }
 
     // -----------------
@@ -38,7 +40,8 @@ class User extends Model implements AuthenticatableContract,
 
         $_user = [
             'id' => $user['id'],
-            'name' => $user['name'],
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
             'email' => $user['email'],
             'created_at' => $user['created_at'],
             'updated_ad' => $user['updated_ad']
@@ -53,4 +56,5 @@ class User extends Model implements AuthenticatableContract,
         }
         return $users;
     }
+ 
 }

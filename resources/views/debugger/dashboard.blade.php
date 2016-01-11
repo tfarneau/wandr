@@ -71,7 +71,7 @@
 		</div>
 	
 		<script> var BASE_PATH = "<?= url(); ?>/api"; </script>
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	    <script src="/assets/admin/jquery.min.js"></script>
 	    <script src="/assets/admin/bootstrap.min.js"></script>  
 	    <script src="/assets/admin/jquery.jsonview.js"></script>  
 	    <script src="/assets/admin/app.js"></script>  
