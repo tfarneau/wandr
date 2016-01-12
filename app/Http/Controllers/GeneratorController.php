@@ -12,6 +12,8 @@ use Auth;
 use App\Generator;
 use App\Service;
 
+use Cache;
+
 use Validator;
 
 class GeneratorController extends ApiController
@@ -167,51 +169,50 @@ class GeneratorController extends ApiController
         return view('generators.create')->with(compact('metas'));
     }
 
-    public function actions($action,$param = null,$param2 = null,$param3 = null){
+    public function actions($force,$action,$param = null,$param2 = null,$param3 = null){
+
+        if($param != null){
+
+            $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
+
+            $client = new \Google_Client();
+            $client->setAuthConfigFile(public_path().'/private/google_oauth.json');
+            $client->refreshToken($service['var2']);
+            $analytics = new \Google_Service_Analytics($client);
+
+            $cache_key = "ga_".$action."_".$service['id']."_".Auth::user()->id;
+            if (Cache::has($cache_key) && $force == "unforce"){
+                return Cache::get($cache_key);
+            }
+
+        }
 
         if($action == "getservices"){
             return Service::transformMany(Service::where('slug', 'slack')->orWhere('slug', 'ga')->where('user_id', Auth::user()->id)->get());
         }
 
         if($action == "getaccounts"){
-            $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
-            
-            $client = new \Google_Client();
-            $client->setAuthConfigFile(public_path().'/private/google_oauth.json');
-            $client->refreshToken($service['var2']);
-            $analytics = new \Google_Service_Analytics($client);
-         
-                $accounts = $analytics->management_accounts->listManagementAccounts();
-                return $accounts->getItems();
-            }
+            $accounts = $analytics->management_accounts->listManagementAccounts();
+            $data = $accounts->getItems();
+            Cache::add($cache_key, $data, 43200);
+            return $data;
+        }
 
-            if($action == "getproperties"){
-                $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
-                
-                $client = new \Google_Client();
-            $client->setAuthConfigFile(public_path().'/private/google_oauth.json');
-            $client->refreshToken($service['var2']);
-            $analytics = new \Google_Service_Analytics($client);
-                
-                $properties = $analytics->management_webproperties->listManagementWebproperties($param2);
-                return $properties->getItems();
-            }
+        if($action == "getproperties"){
+            $properties = $analytics->management_webproperties->listManagementWebproperties($param2);
+            $data = $properties->getItems();
+            Cache::add($cache_key, $data, 43200);
+            return $data;
+        }
 
-            if($action == "getprofiles"){
-                $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
-                
-                $client = new \Google_Client();
-            $client->setAuthConfigFile(public_path().'/private/google_oauth.json');
-            $client->refreshToken($service['var2']);
-            $analytics = new \Google_Service_Analytics($client);
-            
+        if($action == "getprofiles"){
             $profiles = $analytics->management_profiles->listManagementProfiles($param2, $param3);
-
-            return $profiles->getItems();
+            $data = $profiles->getItems();
+            Cache::add($cache_key, $data, 43200);
+            return $data;
         }
 
         if($action == "testslack"){
-            $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
             $client = new \Maknz\Slack\Client($service['var2'],[
                 'username' => 'Cyril',
                 'channel' => '#'.$param2,

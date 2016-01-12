@@ -27,6 +27,7 @@ class CreateGeneratorsTable extends Migration
             $table->string('start_date');
             $table->string('end_date');
             $table->text('template');
+            $table->integer('timezone')->default(0);
             $table->string('activation_hours');
             $table->string('activation_days');
             $table->timestamps();

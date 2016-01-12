@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->integer('timezone');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('company', 255);
             $table->string('password', 60);
             $table->integer('max_generators')->default(3);
             $table->rememberToken();

@@ -87,6 +87,9 @@
 		        <div class="panel panel-default">
 		            <div class="panel-heading">Analytics configuration</div>
 		            <div class="panel-body">
+		            	<div class="col-md-12">
+		            		<a href="#" class="js-force">Your website is not here ? Resync your Google Analytics accounts</a><br><br>
+		            	</div>
 						
 						<div class="panel-loader js-galoader js-loader">
 			            	<div class="sk-fading-circle">
@@ -170,7 +173,7 @@
 						<div class="col-md-4">
 					    	<div class="form-group">
 					    	<label class="control-label">Test slack connection ?</label><br>
-					        	<a href="#" class="btn btn-primary js-testslack is-active btn-form">Send a test message</a>
+					        	<a href="#" class="btn btn-default js-testslack is-active btn-form">Send a test message</a>
 					        	<p class="help-block">Send a test message to the slack channel(s)</p>
 					    	</div>
 						</div>
@@ -268,7 +271,7 @@
 								<?php endforeach; ?>
 							</div>
 
-							<a href="#" class="btn btn-primary btn-full js-addassitantfields pull-right">Add to my report</a>
+							<a href="#" class="btn btn-default btn-full js-addassitantfields pull-right">Add to my report</a>
 
 						</div>
 
@@ -493,7 +496,7 @@
 		$('.js-testslack').on('click',function(){
 			if($(this).hasClass('is-active')){
 				clearTimeout(slackTestTimer);
-				$.get("/api/generators/actions/testslack/"+$('.js-slackservices').val()+"/"+$('.js-channel').val(), function(data){ console.log(data); });
+				$.get("/api/generators/actions/unforce/testslack/"+$('.js-slackservices').val()+"/"+$('.js-channel').val(), function(data){ console.log(data); });
 				$(".js-testslack").removeClass('is-active');
 				slackTestTimer=setTimeout(function(){
 					$(".js-testslack").addClass('is-active');
@@ -504,9 +507,25 @@
 		// Ga tree
 
 		var first_run = false;
+		var force_mode = "unforce";
+
+		$('.js-force').one('click',function(){
+			$(this).text('Resyncing Google Analytics accounts ...');
+			force_mode = "force";
+
+			$('.js-analyticsaccounts,.js-analyticsproperties,.js-analyticsprofiles').each(function(i,el){
+				$(el).html('');
+			});
+			$('.js-analyticsservices,.js-analyticsaccounts,.js-analyticsproperties,.js-analyticsprofiles').each(function(i,el){
+					$(el).find('a').removeClass('active');
+					$(el).next('input').val('');
+				});
+			
+			getServices();
+		});
 
 		function getProfiles(service,account,property){
-			$.get("/api/generators/actions/getprofiles/"+service+"/"+account+"/"+property, function(data) {
+			$.get("/api/generators/actions/"+force_mode+"/getprofiles/"+service+"/"+account+"/"+property, function(data) {
 				var html = "";
 				for(var i in data){ html += "<a href='#' class='list-group-item' data-value='"+data[i].id+"'>"+data[i].name+" ("+data[i].webPropertyId+")</a>"; }
 				$('.js-analyticsprofiles').html(html);
@@ -535,7 +554,7 @@
 		}
 
 		function getProperties(service,account){
-			$.get("/api/generators/actions/getproperties/"+service+"/"+account, function(data) {
+			$.get("/api/generators/actions/"+force_mode+"/getproperties/"+service+"/"+account, function(data) {
 				var html = "";
 				for(var i in data){ html += "<a href='#' class='list-group-item' data-value='"+data[i].id+"'>"+data[i].name+"</a>"; }
 				$('.js-analyticsproperties').html(html);
@@ -571,7 +590,7 @@
 		}
 
 		function getAccounts(service){
-			$.get("/api/generators/actions/getaccounts/"+service, function(data) {
+			$.get("/api/generators/actions/"+force_mode+"/getaccounts/"+service, function(data) {
 				var html = "";
 				for(var i in data){ html += "<a href='#' class='list-group-item' data-value='"+data[i].id+"'>"+data[i].name+"</a>"; }
 				$('.js-analyticsaccounts').html(html);
@@ -608,7 +627,7 @@
 
 		function getServices(){
 
-			$.get("/api/generators/actions/getservices", function(data) {
+			$.get("/api/generators/actions/"+force_mode+"/getservices", function(data) {
 				var htmlAnalytics = "";
 				var htmlSlack = "";
 				for(var i in data){ 

@@ -20,6 +20,7 @@ Route::controllers([
 
 Route::get('me/dashboard', ['middleware' => 'auth', 'uses' => 'UserController@dashboard']);
 
+// Route::get('me/service/{id}/populate', ['middleware' => 'auth', 'uses' => 'AccountController@populate']);
 Route::get('me/service/{id}/test', ['middleware' => 'auth', 'uses' => 'ServiceController@test']);
 Route::get('me/service/{id}/delete', ['middleware' => 'auth', 'uses' => 'ServiceController@delete']);
 Route::get('me/service/create/{slug}', ['middleware' => 'auth', 'uses' => 'ServiceController@create']);
@@ -40,7 +41,7 @@ Route::post('me/account', ['middleware' => 'auth', 'uses' => 'UserController@sav
 
 Route::group(['prefix' => 'api'], function()
 {
-    Route::get('generators/actions/{action}/{param?}/{param2?}/{param3?}', ['middleware' => 'auth', 'uses' => 'GeneratorController@actions']);
+    Route::get('generators/actions/{force}/{action}/{param?}/{param2?}/{param3?}', ['middleware' => 'auth', 'uses' => 'GeneratorController@actions']);
     Route::post('generator/save', ['middleware' => 'auth', 'uses' => 'GeneratorController@save']);
 
     // Route::get('me', 'UserController@index')->middleware(['jwt.auth']);

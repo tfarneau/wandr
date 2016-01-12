@@ -12,6 +12,7 @@ class AuthController extends Controller
 {
 
     protected $redirectPath = '/me/dashboard';
+    protected $redirectTo = '/me/dashboard';
     protected $loginPath = '/account/login';
 
     /*

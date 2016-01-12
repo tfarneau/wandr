@@ -8,7 +8,7 @@ class Generator extends Model
 {
     protected $table = 'generators';
 
-    protected $fillable = ['user_id','ga_service_id','slack_service_id','ga_account','name','ga_property','ga_profile','slack_channel','start_date','end_date','template','activation_hours','activation_days'];
+    protected $fillable = ['user_id','ga_service_id','slack_service_id','ga_account','name','ga_property','ga_profile','slack_channel','start_date','end_date','template','activation_hours','timezone','activation_days'];
 
     public function user()
 	{
@@ -43,6 +43,7 @@ class Generator extends Model
             "start_date" => $generator['start_date'],
             "end_date" => $generator['end_date'],
             "template" => $generator['template'],
+            "timezone" => $generator['timezone'],
             "activation_hours" => $generator['activation_hours'],
             "activation_days" => $generator['activation_days'],
         ];
