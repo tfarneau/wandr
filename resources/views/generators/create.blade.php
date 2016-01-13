@@ -177,52 +177,52 @@
 							<div class="form-group">
 					        	<textarea name="template" class="form-control js-reportcontent report-text" rows="10"><?= isset($generator) ? $generator['template'] : 'New sessions : @{{ga:sessions}}'; ?></textarea>
 					    	</div>
-					    	<div class="col-md-6 nopadding-left date-select">
-					    		<div class="form-group">
-						        	<select class="form-control" name="start_date">
-						        		<?php
-						        			$start_dates = [
-						        				['','Timerange start date'],
-						        				['today','today'],
-						        				['yesterday','yesterday'],
-						        				['3daysAgo','3daysAgo'],
-						        				['7daysAgo','7daysAgo'],
-						        				['14daysAgo','14daysAgo'],
-						        				['30daysAgo','30daysAgo'],
-						        			];
-						        		?>
-						        		@foreach($start_dates as $d)
-						        			<option value="{{ $d[0] }}" <?= isset($generator) && $d[0] == $generator['start_date'] ? 'selected' : null; ?>>{{ $d[1] }}</option>
-						        		@endforeach
-									</select>
-									<p class="help-block">Start date for the analytics query</p>
-						    	</div>
-						    </div>
 					    	<div class="col-md-6 nopadding-right date-select">
 					    		<div class="form-group">
 			                        <select class="form-control" name="end_date">
 			                        	<?php
 						        			$end_dates = [
-						        				['','Timerange end date'],
-						        				['yesterday','yesterday'],
-						        				['2daysAgo','2daysAgo'],
-						        				['3daysAgo','3daysAgo'],
-						        				['4daysAgo','4daysAgo'],
-						        				['5daysAgo','5daysAgo'],
-						        				['6daysAgo','6daysAgo'],
-						        				['7daysAgo','7daysAgo'],
-						        				['14daysAgo','14daysAgo'],
-						        				['21daysAgo','21daysAgo'],
-						        				['30daysAgo','30daysAgo'],
-						        				['60daysAgo','60daysAgo'],
-						        				['90daysAgo','90daysAgo']
+						        				['','From date ...'],
+						        				['yesterday','Yesterday'],
+						        				['2daysAgo','2 days ago'],
+						        				['3daysAgo','3 days ago'],
+						        				['4daysAgo','4 days ago'],
+						        				['5daysAgo','5 days ago'],
+						        				['6daysAgo','6 days ago'],
+						        				['7daysAgo','7 days ago'],
+						        				['14daysAgo','14 days ago'],
+						        				['21daysAgo','21 days ago'],
+						        				['30daysAgo','30 days ago'],
+						        				['60daysAgo','60 days ago'],
+						        				['90daysAgo','90 days ago']
 						        			];
 						        		?>
 										@foreach($end_dates as $d)
 						        			<option value="{{ $d[0] }}" <?= isset($generator) && $d[0] == $generator['end_date'] ? 'selected' : null; ?>>{{ $d[1] }}</option>
 						        		@endforeach
 									</select>
-									<p class="help-block">End date for the analytics query</p>
+									<p class="help-block">Get data from this date ...</p>
+						    	</div>
+						    </div>
+						    <div class="col-md-6 nopadding-left date-select">
+					    		<div class="form-group">
+						        	<select class="form-control" name="start_date">
+						        		<?php
+						        			$start_dates = [
+						        				['','... to date'],
+						        				['today','Today'],
+						        				['yesterday','Yesterday'],
+						        				['3daysAgo','3 days ago'],
+						        				['7daysAgo','7 days ago'],
+						        				['14daysAgo','14 days ago'],
+						        				['30daysAgo','30 days ago'],
+						        			];
+						        		?>
+						        		@foreach($start_dates as $d)
+						        			<option value="{{ $d[0] }}" <?= isset($generator) && $d[0] == $generator['start_date'] ? 'selected' : null; ?>>{{ $d[1] }}</option>
+						        		@endforeach
+									</select>
+									<p class="help-block">... to this date</p>
 						    	</div>
 						    </div>
 						</div>

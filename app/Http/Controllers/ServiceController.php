@@ -87,8 +87,7 @@ class ServiceController extends ApiController
                 $status = $service->save();
 
                 if($status == 1){
-                    return redirect('me/dashboard')
-                        ->with('message', 'Your service was successfully added !');
+                    return redirect()->back()->with('message', 'Your service was successfully added !');
                 }else{
                     return redirect()->back()
                         ->with('message', 'Unknown error while adding your service. Please contact an administrator.')
@@ -133,7 +132,7 @@ class ServiceController extends ApiController
 
                 $service->save();
 
-                return redirect('me/dashboard')->with('message', 'Your service was successfully added !');
+                return redirect()->back()->with('message', 'Your service was successfully added !');
             }
 
         }
