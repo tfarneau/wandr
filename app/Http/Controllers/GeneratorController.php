@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Modules\GoogleAnalyticsModule;
+use App\Modules\SlackModule;
+
 use Auth;
 use App\Generator;
 use App\Service;
+use App\Report;
 
 use Cache;
 
@@ -105,13 +109,11 @@ class GeneratorController extends ApiController
             ]
         );
 
+        if ($v->fails() && $is_valid){
 
-        if ($v->fails() && $is_valid)
-        {
             return ['status' => 'error', 'data' => $v->errors()];
-        }
-        else
-        {
+
+        }else{
 
             $inputs['user_id'] = Auth::user()->id;
 
@@ -135,16 +137,20 @@ class GeneratorController extends ApiController
         $generator = Generator::where('user_id', Auth::user()->id)->where('id',(int) $id)->first();
 
         if($generator['is_active'] == 1){
-            $data = Generator::createReport($generator);
 
-            $settings = [
-                'username' => 'Slackreport',
-                'link_names' => true
-            ];
-            $client = new \Maknz\Slack\Client($data['generator']['slack_service']['var2'], $settings);
-            $client->send($data['message']);
+            $data = GoogleAnalyticsModule::create_report($generator);
+            SlackModule::send_report($data, $generator);
+
+            $report = new Report([
+                'user_id' => Auth::user()->id,
+                'generator_id' => $generator['id'],
+                'text' => 'nothing'
+            ]);
+
+            $report->save();
 
             return redirect()->back()->with('message', 'A test report was sent to your slack channel');
+
         }else{
             return redirect()->back()->with('message', 'Error, you have to activate this generator to be enable to test it.');
         }
@@ -175,12 +181,10 @@ class GeneratorController extends ApiController
 
             $service = Service::where('id', (int) $param)->where('user_id', Auth::user()->id)->first();
 
-            $client = new \Google_Client();
-            $client->setAuthConfigFile(public_path().'/private/google_oauth.json');
-            $client->refreshToken($service['var2']);
-            $analytics = new \Google_Service_Analytics($client);
+            $client = GoogleAnalyticsModule::create_google_client($service);
+            $analytics = GoogleAnalyticsModule::create_analytics_client($client);
 
-            $cache_key = "ga_".$action."_".$service['id']."_".Auth::user()->id;
+            $cache_key = "ga_".$action."_".$service['id']."_".md5($param.$param2.$param3)."_".Auth::user()->id;
             if (Cache::has($cache_key) && $force == "unforce"){
                 return Cache::get($cache_key);
             }

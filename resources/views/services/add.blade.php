@@ -1,12 +1,4 @@
 @extends('layouts.app')
- 
-@section('content_header')
-	<div class="row">
-		<div class="col-md-12">
-			<h4>Add a service</h4>
-		</div>
-	</div>
-@endsection
 
 @section('content')
 	
@@ -14,7 +6,7 @@
 
 		@if($slug == "slack")
 			
-			<div class="col-md-8">
+			<div class="col-md-12">
 		        <div class="panel panel-default">
 		            <div class="panel-heading">Import a Slack team</div>
 		            <div class="panel-body">
@@ -50,7 +42,7 @@
 		            </div>
 		       	</div>
 		    </div>
-		    <div class="col-md-4">
+		    <div class="col-md-12">
 				<h5>Do you store Slack messages ?</h5>
 				<p>No, incoming webhooks only allow us to send message to Slack, not to read messages from Slack.</p>
 				<h5>How to create a Incoming Webhook ?</h5>

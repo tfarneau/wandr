@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\Generator;
+use App\Report;
+
+use App\Modules\GoogleAnalyticsModule;
+use App\Modules\SlackModule;
 
 class GenerateReports extends Command
 {
@@ -67,14 +71,17 @@ class GenerateReports extends Command
 
             if($is_day == true && $is_hour == true){
                 $this->info('Publishing to slack ...');
-                $data = Generator::createReport($generator);
 
-                $settings = [
-                    'username' => 'Slackreport',
-                    'link_names' => true
-                ];
-                $client = new \Maknz\Slack\Client($data['generator']['slack_service']['var2'], $settings);
-                $client->send($data['message']);
+                $data = GoogleAnalyticsModule::create_report($generator);
+                SlackModule::send_report($data, $generator);
+
+                $report = new Report([
+                    'user_id' => $generator['user_id'],
+                    'generator_id' => $generator['id'],
+                    'text' => 'nothing'
+                ]);
+
+                $report->save();
             }
 
         }

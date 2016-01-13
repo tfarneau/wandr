@@ -144,6 +144,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Skovmand\Mailchimp\MailchimpServiceProvider::class,
         'Maknz\Slack\SlackServiceProvider',
         'Artdarek\OAuth\OAuthServiceProvider',
         // Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,

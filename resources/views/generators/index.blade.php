@@ -1,43 +1,72 @@
 @extends('layouts.app')
- 
+
 @section('content')
 
 	<div class="row">
-		<div class="col-md-12">
-			<h3>Generators</h3>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<p>Start by configuring services to enable you to connect with slack channels.</p>
-			<div class="panel panel-default">
 
-				<div class="panel-heading">My generators</div>
-
-				@if(count($generators) == 0)
-					<div class="panel-body">
-						<p>No service added ! Start by adding a slack service and a google analytics service.</p>
-					</div>
+		<div class="col-md-12">
+			<p class="lead">My generators</p>
+			<ul class="list-group">
+                @if(count($generators) == 0)
+					<li class="list-group-item">No generator added !</li>
 				@endif
-				
+
 				@if(count($generators) > 0)
 					@foreach($generators as $generator)
 						<li class="list-group-item">
-							<div class="row">
-								<div class="col-md-8">
-									<h5>{{ $generator['template'] }}</h5>
-								</div>
-								<div class="col-md-4">
-									<a href="me/generator/{{ $generator['id'] }}/preview" class="btn btn-default pull-right">Preview</a>
-									<a href="me/generator/{{ $generator['id'] }}/preview" class="btn btn-default pull-right">Edit</a>
-									<a href="me/generator/{{ $generator['id'] }}/preview" class="btn btn-default pull-right">Delete</a>
+
+							<div>
+								{{ $generator['name'] }}
+								
+								@if($generator['is_active'] == 1)
+									<span class="label label-info active-status">Active</span>
+								@else
+									<span class="label label-danger active-status">Unactive</span>
+								@endif
+
+								<div class="btn-group pull-right">
+									@if($generator['is_active'] == 1)
+										<a href="/me/generator/{{ $generator['id'] }}/unactivate" class="btn btn-default">Unactivate</a>
+									@else
+										<a href="/me/generator/{{ $generator['id'] }}/activate" class="btn btn-default">Activate</a>
+									@endif
+									<a href="/me/generator/{{ $generator['id'] }}/edit" class="btn btn-default">Edit</a>
+									<a href="/me/generator/{{ $generator['id'] }}/test" class="btn btn-default">Test now</a>
 								</div>
 							</div>
-						</li>
+
+							<div class="times">
+								<?php $hours = explode(',',$generator['activation_hours']); ?>
+								@foreach($hours as $h)
+									<span class="label label-success">{{ $h }}h</span>
+								@endforeach
+
+								<?php $days = explode(',',$generator['activation_days']); ?>
+								<?php
+									$days_array = array(
+									    'Monday',
+									    'Tuesday',
+									    'Wednesday',
+									    'Thursday',
+									    'Friday',
+									    'Saturday',
+									    'Sunday'
+									);
+								?>
+
+								@foreach($days as $d)
+									<span class="label label-success">{{ $days_array[$d-1] }}</span>
+								@endforeach
+							</div>
+		                </li>
 					@endforeach
 				@endif
 
-			</div>
+				<li class="list-group-item">
+					<a href="/me/generator/create" class="btn btn-primary">Create a generator</a>
+                </li>
+             </ul>
 		</div>
+		
 	</div>
 @endsection

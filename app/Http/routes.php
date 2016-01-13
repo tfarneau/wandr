@@ -15,7 +15,7 @@ Route::get('/', 'PageController@home');
 
 Route::controllers([
     'account' => 'Auth\AuthController',
-    'password' => 'Auth\PasswordController',
+    'password' => 'Auth\PasswordController'
 ]);
 
 Route::get('me/dashboard', ['middleware' => 'auth', 'uses' => 'UserController@dashboard']);
@@ -26,12 +26,18 @@ Route::get('me/service/{id}/delete', ['middleware' => 'auth', 'uses' => 'Service
 Route::get('me/service/create/{slug}', ['middleware' => 'auth', 'uses' => 'ServiceController@create']);
 Route::post('me/service/add/{slug}', ['middleware' => 'auth', 'uses' => 'ServiceController@add']);
 Route::get('me/service/add/{slug}', ['middleware' => 'auth', 'uses' => 'ServiceController@add']);
+Route::get('me/services/slack', ['middleware' => 'auth', 'uses' => 'ServiceController@index_slack']);
+Route::get('me/services/stats', ['middleware' => 'auth', 'uses' => 'ServiceController@index_stats']);
 
 Route::get('me/generators', ['middleware' => 'auth', 'uses' => 'GeneratorController@index']);
 Route::get('me/generator/create', ['middleware' => 'auth', 'uses' => 'GeneratorController@create']);
 Route::get('me/generator/{id}/preview', ['middleware' => 'auth', 'uses' => 'GeneratorController@preview']);
 Route::get('me/generator/{id}/edit', ['middleware' => 'auth', 'uses' => 'GeneratorController@edit']);
 Route::get('me/generator/{id}/test', ['middleware' => 'auth', 'uses' => 'GeneratorController@test']);
+
+Route::get('home', function(){
+    return redirect('me/dashboard');
+});
 
 Route::get('me/generator/{id}/activate', ['middleware' => 'auth', 'uses' => 'GeneratorController@activate']);
 Route::get('me/generator/{id}/unactivate', ['middleware' => 'auth', 'uses' => 'GeneratorController@unactivate']);

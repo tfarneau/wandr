@@ -1,18 +1,4 @@
 @extends('layouts.app')
- 
-@section('content_header')
-	<div class="row">
-		<div class="col-md-12">
-			@if(isset($generator))
-				<h4>Edit a generator</h4>
-			@else
-				<h4>Create a new generator</h4>
-			@endif
-
-			<p>Generator are setups that generates slack reports.</p>
-		</div>
-	</div>
-@endsection
 
 @section('content')
 	
@@ -384,7 +370,6 @@
 		            	});
 	            	}
 
-	                console.log(data);
 	            }
 	        });
 			e.preventDefault();
@@ -433,6 +418,7 @@
 		};
 
 		$('.js-addassitantfields').on('click',function(e){
+			console.log(assistant_fields)
 			var value = null;
 			if(assistant_fields.metric !== null){
 				value = assistant_fields.metric;
@@ -463,7 +449,7 @@
 		$('.js-dimension').on('click',function(){
 			if($(this).hasClass('active')){
 				$('.js-dimension').removeClass('active');
-				assistant_fields.metric = null;
+				assistant_fields.dimension = null;
 			}else{
 				$('.js-dimension').removeClass('active');
 				assistant_fields.dimension = $(this).attr('data-value');
